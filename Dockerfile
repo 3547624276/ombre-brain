@@ -31,4 +31,4 @@ ENV OMBRE_BUCKETS_DIR=/app/buckets
 
 EXPOSE 8000
 ENV HOST=0.0.0.0
-CMD ["python", "server.py"]
+CMD ["sh", "-c", "python server.py --port $PORT"]
