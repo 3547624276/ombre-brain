@@ -1950,8 +1950,8 @@ if __name__ == "__main__":
         )
         logger.info("CORS middleware enabled for remote transport / 已启用 CORS 中间件")
         # 优先读取系统分配的 PORT，如果没有则回退到 8000
-         port_to_use = int(os.environ.get("PORT", 8000))
+        port_to_use = int(os.environ.get("PORT", 8000))
 
-         uvicorn.run(_app, host="0.0.0.0", port=port_to_use)
+        uvicorn.run(_app, host="0.0.0.0", port=port_to_use)
     else:
         mcp.run(transport=transport)
