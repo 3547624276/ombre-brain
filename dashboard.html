@@ -1205,7 +1205,10 @@ async function showDetail(id) {
 }
 
 async function editBucket(id) {
-  var text = prompt('请输入新的记忆内容');
+  var text = prompt(
+  '请输入新的记忆内容',
+  (await (await fetch(BASE + '/api/bucket/' + id)).json()).content
+);
 
   if (!text) return;
 
