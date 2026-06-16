@@ -1282,16 +1282,17 @@ async function editBucket(id) {
         钉选
       </label>
     </div>
+    
+    <button onclick="saveBucket('${id}')">
+      保存修改
+    </button>
 
     <div style="margin-bottom:12px;">
       <label>内容</label><br>
       <textarea id="edit-content"
-                style="width:100%;height:300px;padding:8px;">${b.content || ''}</textarea>
+                style="width:100%;height:150px;padding:8px;">${b.content || ''}</textarea>
     </div>
 
-    <button onclick="saveBucket('${id}')">
-      保存修改
-    </button>
   `;
 }
 
