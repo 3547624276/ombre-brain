@@ -1316,6 +1316,32 @@ async def api_bucket_detail(request):
         "content": strip_wikilinks(bucket.get("content", "")),
         "score": decay_engine.calculate_score(meta),
     })
+    
+# =====================================================
+# Update bucket
+# =====================================================
+
+@mcp.custom_route("/api/bucket/{bucket_id}", methods=["PATCH"])
+async def api_bucket_update(request):
+    from starlette.responses import JSONResponse
+
+    err = _require_auth(request)
+    if err:
+        return err
+
+    bucket_id = request.path_params["bucket_id"]
+
+    data = await request.json()
+
+    ok = await bucket_mgr.update(bucket_id, **data)
+
+    if not ok:
+        return JSONResponse(
+            {"error": "update failed"},
+            status_code=404
+        )
+
+    return JSONResponse({"ok": True})
 
 
 @mcp.custom_route("/api/search", methods=["GET"])
