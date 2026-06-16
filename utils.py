@@ -186,7 +186,7 @@ def sanitize_name(name: str) -> str:
     """
     if not isinstance(name, str):
         return "unnamed"
-    cleaned = re.sub(r"[^\w\s\u4e00-\u9fff-]", "", name, flags=re.UNICODE)
+    cleaned = name
     cleaned = cleaned.strip()[:80]
     return cleaned if cleaned else "unnamed"
 
