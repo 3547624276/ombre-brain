@@ -1227,13 +1227,51 @@ async function editBucket(id) {
     </div>
 
     <div style="margin-bottom:12px;">
+      <label>域</label><br>
+      <input id="edit-domain"
+             value="${(meta.domain || []).join(',')}"
+             style="width:100%;padding:8px;">
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <label>事件效价(V)</label><br>
+      <input id="edit-valence"
+             type="number"
+             step="0.01"
+             value="${meta.valence || 0}">
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <label>唤醒度(A)</label><br>
+      <input id="edit-arousal"
+             type="number"
+             step="0.01"
+             value="${meta.arousal || 0}">
+    </div>
+
+    <div style="margin-bottom:12px;">
       <label>重要度</label><br>
       <input id="edit-importance"
              type="number"
-             min="1"
-             max="10"
-             value="${meta.importance || 5}"
-             style="width:100%;padding:8px;">
+             value="${meta.importance}">
+    </div>
+    
+        <div style="margin-bottom:12px;">
+      <label>
+        <input id="edit-resolved"
+               type="checkbox"
+               ${meta.resolved ? 'checked' : ''}>
+        解决
+      </label>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <label>
+        <input id="edit-digested"
+               type="checkbox"
+               ${meta.digested ? 'checked' : ''}>
+        消化
+      </label>
     </div>
 
     <div style="margin-bottom:12px;">
@@ -1268,22 +1306,41 @@ async function saveBucket(id) {
       content: document.getElementById('edit-content').value,
 
       metadata: {
-        name: document.getElementById('edit-name').value,
+    name: document.getElementById('edit-name').value,
 
-        tags:
-          document.getElementById('edit-tags')
-          .value
-          .split(',')
-          .map(v => v.trim())
-          .filter(Boolean),
+    tags: document.getElementById('edit-tags')
+        .value
+        .split(',')
+        .map(v => v.trim())
+        .filter(Boolean),
 
-        importance: parseInt(
-          document.getElementById('edit-importance').value
-        ),
+    domain: document.getElementById('edit-domain')
+        .value
+        .split(',')
+        .map(v => v.trim())
+        .filter(Boolean),
 
-        pinned:
-          document.getElementById('edit-pinned').checked
-      }
+    valence: parseFloat(
+        document.getElementById('edit-valence').value
+    ) || 0,
+
+    arousal: parseFloat(
+        document.getElementById('edit-arousal').value
+    ) || 0,
+
+    resolved: document.getElementById('edit-resolved')
+        .checked,
+
+    digested: document.getElementById('edit-digested')
+        .checked,
+
+    importance: parseInt(
+        document.getElementById('edit-importance').value
+    ) || 1,
+
+    pinned: document.getElementById('edit-pinned')
+        .checked
+}
     })
   });
 
