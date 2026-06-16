@@ -1195,10 +1195,17 @@ async function showDetail(id) {
         '<div class="field"><label>创建</label>' + (meta.created || '—') + '</div>' +
         '<div class="field"><label>最后活跃</label>' + (meta.last_active || '—') + '</div>' +
       '</div>' +
+      
+      '<button onclick="editBucket(\'' + id + '\')" style="margin:12px 0;padding:8px 16px;">编辑</button>' +
+
       '<div class="detail-content">' + esc(b.content) + '</div>';
   } catch (e) {
     content.innerHTML = '<div class="loading">加载失败: ' + e.message + '</div>';
   }
+}
+
+async function editBucket(id) {
+  alert('编辑功能测试成功: ' + id);
 }
 
 function closeDetail() {
