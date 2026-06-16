@@ -1297,6 +1297,20 @@ async function editBucket(id) {
 }
 
 async function saveBucket(id) {
+  
+  const resolved =
+    document.getElementById('edit-resolved').checked;
+
+  const pinned =
+    document.getElementById('edit-pinned').checked;
+
+  let type = 'dynamic';
+
+  if (resolved) {
+    type = 'archived';
+  } else if (pinned) {
+    type = 'permanent';
+  }
 
   await fetch(BASE + '/api/bucket/' + id, {
     method: 'PATCH',
@@ -1329,11 +1343,9 @@ async function saveBucket(id) {
         document.getElementById('edit-arousal').value
     ) || 0,
 
-    resolved: document.getElementById('edit-resolved')
-        .checked,
-        
-    type: document.getElementById('edit-resolved')
-        .checked ? 'archived' : 'dynamic',
+    resolved: resolved,
+
+    type: type,
 
     digested: document.getElementById('edit-digested')
         .checked,
@@ -1342,8 +1354,7 @@ async function saveBucket(id) {
         document.getElementById('edit-importance').value
     ) || 1,
 
-    pinned: document.getElementById('edit-pinned')
-        .checked
+    pinned: pinned
 
     })
   });
