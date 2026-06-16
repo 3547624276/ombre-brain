@@ -274,6 +274,8 @@ class BucketManager:
             post["name"] = sanitize_name(kwargs["name"])
         if "resolved" in kwargs:
             post["resolved"] = bool(kwargs["resolved"])
+        if "type" in kwargs:
+            post["type"] = str(kwargs["type"])
         if "pinned" in kwargs:
             post["pinned"] = bool(kwargs["pinned"])
             if kwargs["pinned"]:
