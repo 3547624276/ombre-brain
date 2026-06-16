@@ -1205,7 +1205,23 @@ async function showDetail(id) {
 }
 
 async function editBucket(id) {
-  alert('编辑功能测试成功: ' + id);
+  var text = prompt('请输入新的记忆内容');
+
+  if (!text) return;
+
+  await fetch(BASE + '/api/bucket/' + id, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      content: text
+    })
+  });
+
+  alert('修改成功');
+
+  showDetail(id);
 }
 
 function closeDetail() {
