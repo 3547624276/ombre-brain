@@ -975,6 +975,8 @@ async def grow(content: str) -> str:
 # Also handles deletion (delete=True)
 # 同时承接删除功能
 # =============================================================
+print("=== TRACE REGISTERED ===")
+
 @mcp.tool()
 async def trace(
     bucket_id: str,
