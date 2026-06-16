@@ -1331,6 +1331,9 @@ async function saveBucket(id) {
 
     resolved: document.getElementById('edit-resolved')
         .checked,
+        
+    type: document.getElementById('edit-resolved')
+        .checked ? 'archived' : 'dynamic',
 
     digested: document.getElementById('edit-digested')
         .checked,
