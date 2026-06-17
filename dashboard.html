@@ -1216,9 +1216,8 @@ async function deleteBucket(id) {
     if (!confirm('确定删除这条记忆吗？')) return;
 
     try {
-        await api('/trace', {
-            bucket_id: id,
-            delete: true
+        await fetch(BASE + '/api/bucket/' + id, {
+          method: 'DELETE'
         });
 
         alert('删除成功');
