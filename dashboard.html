@@ -1222,8 +1222,7 @@ async function deleteBucket(id) {
 
         alert('删除成功');
 
-        closeDetailModal();
-        loadMemoryList();
+        location.reload();
 
     } catch (e) {
         alert('删除失败: ' + e.message);
