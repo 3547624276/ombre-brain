@@ -1212,9 +1212,15 @@ async function showDetail(id) {
   }
 }
 
-function deleteBucket(id) {
+async function deleteBucket(id) {
     if (!confirm('确定删除这条记忆吗？')) return;
-    reviewAction(id, 'delete');
+
+    try {
+        await reviewAction(id, 'delete');
+        location.reload();
+    } catch (e) {
+        alert('删除失败：' + e.message);
+    }
 }
 
 async function editBucket(id) {
