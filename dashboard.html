@@ -1196,12 +1196,39 @@ async function showDetail(id) {
         '<div class="field"><label>最后活跃</label>' + (meta.last_active || '—') + '</div>' +
       '</div>' +
       
-      '<button onclick="editBucket(\'' + id + '\')" style="margin:12px 0;padding:8px 16px;">编辑</button>' +
+      '<div style="margin:12px 0;display:flex;gap:8px;">' +
+
+      '<button onclick="editBucket(\'' + id + '\')" ' +
+      'style="padding:8px 16px;">编辑</button>' +
+
+      '<button onclick="deleteBucket(\'' + id + '\')" ' +
+      'style="padding:8px 16px;color:#b42318;border:1px solid #f04438;background:#fff;">删除</button>' +
+
+      '</div>' +
 
       '<div class="detail-content">' + esc(b.content) + '</div>';
   } catch (e) {
     content.innerHTML = '<div class="loading">加载失败: ' + e.message + '</div>';
   }
+}
+
+async function deleteBucket(id) {
+    if (!confirm('确定删除这条记忆吗？')) return;
+
+    try {
+        await api('/trace', {
+            bucket_id: id,
+            delete: true
+        });
+
+        alert('删除成功');
+
+        closeDetailModal();
+        loadMemoryList();
+
+    } catch (e) {
+        alert('删除失败: ' + e.message);
+    }
 }
 
 async function editBucket(id) {
