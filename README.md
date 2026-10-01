@@ -852,3 +852,4 @@ pytest tests/ -v                       # 详细输出
 ## License
 
 MIT
+<!-- Railway deployment trigger -->
