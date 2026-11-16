@@ -1942,6 +1942,8 @@ if __name__ == "__main__":
         import threading
         import uvicorn
         from starlette.middleware.cors import CORSMiddleware
+        from starlette.middleware.base import BaseHTTPMiddleware
+        from starlette.responses import JSONResponse
 
         # --- Application-level keepalive: ping /health every 60s ---
         # --- 应用层保活：每 60 秒 ping 一次 /health，防止 Cloudflare Tunnel 空闲断连 ---
@@ -1967,6 +1969,19 @@ if __name__ == "__main__":
         # --- 添加 CORS 中间件，让远程客户端（Cloudflare Tunnel / ngrok）能正常连接 ---
         if transport == "streamable-http":
             _app = mcp.streamable_http_app()
+
+            class MCPBearerAuthMiddleware(BaseHTTPMiddleware):
+                async def dispatch(self, request, call_next):
+                    if request.url.path.rstrip("/") == "/mcp":
+                        expected = os.environ.get("OMBRE_MCP_AUTH_TOKEN", "").strip()
+                        supplied = request.headers.get("authorization", "")
+                        if not expected:
+                            return JSONResponse({"error": "MCP authentication is not configured"}, status_code=503)
+                        if not secrets.compare_digest(supplied, f"Bearer {expected}"):
+                            return JSONResponse({"error": "Unauthorized"}, status_code=401)
+                    return await call_next(request)
+
+            _app.add_middleware(MCPBearerAuthMiddleware)
         else:
             _app = mcp.sse_app()
         _app.add_middleware(
