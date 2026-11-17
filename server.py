@@ -66,7 +66,7 @@ logger = logging.getLogger("ombre_brain")
 # --- Runtime env vars (port + webhook) / 运行时环境变量 ---
 # OMBRE_PORT: HTTP/SSE 监听端口，默认 8000
 try:
-    OMBRE_PORT = int(os.environ.get("OMBRE_PORT", "8000") or "8000")
+    OMBRE_PORT = int(os.environ.get("PORT") or os.environ.get("OMBRE_PORT", "8000") or "8000")
 except ValueError:
     logger.warning("OMBRE_PORT 不是合法整数，回退到 8000")
     OMBRE_PORT = 8000
