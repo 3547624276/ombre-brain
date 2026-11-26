@@ -1058,7 +1058,7 @@ async function exportMemoryBackup() {
     document.body.appendChild(link);
     link.click();
     link.remove();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
     if (button) button.textContent = '已导出 ' + data.total + ' 条';
   } catch (e) {
     alert('导出失败：' + e.message);
