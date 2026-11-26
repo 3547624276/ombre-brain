@@ -607,6 +607,7 @@
   <div class="search-bar">
     <input type="text" id="search-input" placeholder="搜索记忆…" />
   </div>
+  <button onclick="exportMemoryBackup()" title="导出全部记忆为 JSON" style="margin-left:12px;background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer;">导出记忆</button>
   <button onclick="doLogout()" title="退出登录" style="margin-left:12px;background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer;">退出</button>
 </div>
 
@@ -1029,6 +1030,43 @@ async function authFetch(url, options) {
     return null;
   }
   return resp;
+}
+
+async function exportMemoryBackup() {
+  const button = document.querySelector('.header button[onclick="exportMemoryBackup()"]');
+  const originalText = button ? button.textContent : '导出记忆';
+  if (button) { button.disabled = true; button.textContent = '导出中…'; }
+  try {
+    const resp = await authFetch('/api/backup');
+    if (!resp) return;
+    if (!resp.ok) {
+      let message = '导出失败（HTTP ' + resp.status + '）';
+      try { const data = await resp.json(); message = data.error || message; } catch (_) {}
+      alert(message);
+      return;
+    }
+    const data = await resp.json();
+    if (data.format !== 'ombre-brain-backup' || !Array.isArray(data.buckets)) {
+      throw new Error('服务器返回的备份格式不正确');
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const date = new Date().toISOString().slice(0, 10);
+    link.href = url;
+    link.download = 'OmbreBrain_Backup_' + date + '.json';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    if (button) button.textContent = '已导出 ' + data.total + ' 条';
+  } catch (e) {
+    alert('导出失败：' + e.message);
+  } finally {
+    if (button) {
+      setTimeout(() => { button.disabled = false; button.textContent = originalText; }, 1800);
+    }
+  }
 }
 
 // ========================================
