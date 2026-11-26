@@ -1304,7 +1304,7 @@ async def api_buckets(request):
 @mcp.custom_route("/api/backup", methods=["GET"])
 async def api_backup(request):
     """Export every memory bucket as a lossless JSON backup."""
-    from starlette.responses import JSONResponse
+    from starlette.responses import JSONResponse, Response
 
     err = _require_auth(request)
     if err:
@@ -1337,7 +1337,10 @@ async def api_backup(request):
             "total": len(exported),
             "buckets": exported,
         }
-        return JSONResponse(payload)
+        return Response(
+            content=_json_lib.dumps(payload, ensure_ascii=False, default=str),
+            media_type="application/json",
+        )
     except Exception as e:
         logger.exception("Memory backup export failed")
         return JSONResponse({"error": "backup export failed"}, status_code=500)
