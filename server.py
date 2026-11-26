@@ -1301,6 +1301,48 @@ async def api_buckets(request):
         return JSONResponse({"error": str(e)}, status_code=500)
 
 
+@mcp.custom_route("/api/backup", methods=["GET"])
+async def api_backup(request):
+    """Export every memory bucket as a lossless JSON backup."""
+    from starlette.responses import JSONResponse
+
+    err = _require_auth(request)
+    if err:
+        return err
+
+    try:
+        # list_all(include_archive=True) reads Markdown/frontmatter only;
+        # _load_bucket returns the original content and metadata without mutation.
+        all_buckets = await bucket_mgr.list_all(include_archive=True)
+        exported = []
+        seen_ids = set()
+
+        for bucket in all_buckets:
+            bucket_id = bucket.get("id")
+            if not bucket_id:
+                continue
+            if bucket_id in seen_ids:
+                logger.warning("Duplicate bucket ID encountered during backup: %s", bucket_id)
+            seen_ids.add(bucket_id)
+            exported.append({
+                "id": bucket_id,
+                "metadata": bucket.get("metadata", {}),
+                "content": bucket.get("content", ""),
+            })
+
+        payload = {
+            "format": "ombre-brain-backup",
+            "version": 1,
+            "exported_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "total": len(exported),
+            "buckets": exported,
+        }
+        return JSONResponse(payload)
+    except Exception as e:
+        logger.exception("Memory backup export failed")
+        return JSONResponse({"error": "backup export failed"}, status_code=500)
+
+
 @mcp.custom_route("/api/bucket/{bucket_id}", methods=["GET"])
 async def api_bucket_detail(request):
     """Get full bucket content by ID."""
